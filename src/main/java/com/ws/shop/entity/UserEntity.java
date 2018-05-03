@@ -62,6 +62,7 @@ public class UserEntity {
     /**
      * 地址
      */
+    @NotEmpty
     private String addr;
 
     /**
