@@ -94,4 +94,7 @@ public interface ProductsEntityService {
      */
     public Page<ProductsEntity> SearchProducts(PageInfo pageInfo);
 
-}
+    public Page<ProductsEntity> findByPidAndPnameAndCsname(final Integer pid,final String pname, final String csname,PageInfo pageInfo);
+
+
+    }
