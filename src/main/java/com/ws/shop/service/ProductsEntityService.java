@@ -94,7 +94,23 @@ public interface ProductsEntityService {
      */
     public Page<ProductsEntity> SearchProducts(PageInfo pageInfo);
 
+    /**
+     * 通过pid pname csname 分页查找商品
+     * @param pid
+     * @param pname
+     * @param csname
+     * @param pageInfo
+     * @return
+     */
     public Page<ProductsEntity> findByPidAndPnameAndCsname(final Integer pid,final String pname, final String csname,PageInfo pageInfo);
 
-
+    /**
+     *    通过 pname csname 分页查找商品
+     * @param pid
+     * @param pname
+     * @param csname
+     * @param pageInfo
+     * @return
+     */
+    public Page<ProductsEntity> findByPnameAndCsname(final String pname,final String csname, PageInfo pageInfo);
     }

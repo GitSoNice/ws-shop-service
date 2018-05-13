@@ -121,7 +121,25 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
                 Predicate name1 = criteriaBuilder.like(_name,"%" + pname + "%");
                 Path<String> _csname = root.get("categorySecond").get("csname");
                 Predicate csname1 = criteriaBuilder.like(_csname,"%"+csname+"%");
-                criteriaBuilder.or(pid1);
+                return criteriaBuilder.and(pid1,name1,csname1);
+            }
+        };
+        pageInfo.setSortName("pid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return productsEntityRepo.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<ProductsEntity> findByPnameAndCsname(final String pname,final String csname, PageInfo pageInfo) {
+        Specification<ProductsEntity> specification = new Specification<ProductsEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<ProductsEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<String> _name = root.get("pname");
+                Predicate name1 = criteriaBuilder.like(_name,"%" + pname + "%");
+                Path<String> _csname = root.get("categorySecond").get("csname");
+                Predicate csname1 = criteriaBuilder.like(_csname,"%"+csname+"%");
                 return criteriaBuilder.and(name1,csname1);
             }
         };
