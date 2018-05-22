@@ -106,7 +106,6 @@ public interface ProductsEntityService {
 
     /**
      *    通过 pname csname 分页查找商品
-     * @param pid
      * @param pname
      * @param csname
      * @param pageInfo

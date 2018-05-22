@@ -3,6 +3,7 @@ package com.ws.shop.service.impl;
 import com.ws.shop.bean.PageInfo;
 import com.ws.shop.entity.AdminEntity;
 import com.ws.shop.entity.CategoryEntity;
+import com.ws.shop.entity.ProductsEntity;
 import com.ws.shop.repository.CategoryEntityRepo;
 import com.ws.shop.service.AdminEntityService;
 import com.ws.shop.service.CategoryEntityService;
@@ -18,10 +19,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 /**
@@ -142,5 +140,54 @@ public class CategoryEntityServiceImpl implements CategoryEntityService {
     @Override
     public List<CategoryEntity> findCatagorys() {
         return categoryEntityRepo.findAll();
+    }
+
+    /**
+     * 根据cid，cname分页查询一级分类
+     * @param cid
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    @Override
+    public Page<CategoryEntity> findByCidAndCname(final Integer cid, final String cname, PageInfo pageInfo) {
+        Specification<CategoryEntity> specification = new Specification<CategoryEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<CategoryEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<Integer> _cid = root.get("cid");
+                Predicate cid1 = criteriaBuilder.equal(_cid,cid);
+                Path<String> _cname = root.get("cname");
+                Predicate cname1 = criteriaBuilder.like(_cname,"%" + cname + "%");
+                return criteriaBuilder.and(cid1,cname1);
+            }
+        };
+        pageInfo.setSortName("cid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return categoryEntityRepo.findAll(specification, pageable);
+    }
+
+    /**
+     *    通过 cname 分页查找商品
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    @Override
+    public Page<CategoryEntity> findByCname(final String cname, PageInfo pageInfo) {
+        Specification<CategoryEntity> specification = new Specification<CategoryEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<CategoryEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<String> _cname = root.get("cname");
+                Predicate cname1 = criteriaBuilder.like(_cname,"%" + cname + "%");
+                return cname1;
+            }
+        };
+        pageInfo.setSortName("cid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return categoryEntityRepo.findAll(specification, pageable);
     }
 }

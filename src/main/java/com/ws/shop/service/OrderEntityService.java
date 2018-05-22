@@ -65,4 +65,28 @@ public interface OrderEntityService {
      */
     public ActionResult deleteOrder(OrdersEntity ordersEntity,Integer uid);
 
+    /**
+     * 根据订单编号和用户编号查询订单
+     * @param oid
+     * @param uid
+     * @param pageInfo
+     * @return
+     */
+    public Page<OrdersEntity> findByOidAndUid(final Integer oid, final Integer uid,PageInfo pageInfo);
+
+    /**
+     * 根据订单编号查询订单
+     * @param oid
+     * @param pageInfo
+     * @return
+     */
+    public Page<OrdersEntity> adminFindByOid(final Integer oid,PageInfo pageInfo);
+
+    /**
+     * 根据订单编号查询订单
+     * @param uid
+     * @param pageInfo
+     * @return
+     */
+    public Page<OrdersEntity> adminFindByUid(final Integer uid,PageInfo pageInfo);
 }

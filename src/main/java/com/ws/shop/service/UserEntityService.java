@@ -56,4 +56,12 @@ public interface UserEntityService {
      */
     public Page<UserEntity> SearchUsers(PageInfo pageInfo);
 
+    /**
+     * 根据用户名查找用户并分页
+     * @param username
+     * @param pageInfo
+     * @return
+     */
+    public Page<UserEntity> findByUserName(final String username, PageInfo pageInfo);
+
 }

@@ -3,6 +3,7 @@ package com.ws.shop.service.impl;
 import com.ws.shop.bean.PageInfo;
 import com.ws.shop.entity.AdminEntity;
 import com.ws.shop.entity.CategorySecondEntity;
+import com.ws.shop.entity.ProductsEntity;
 import com.ws.shop.repository.CategorySecondEntityRepo;
 import com.ws.shop.service.AdminEntityService;
 import com.ws.shop.service.CategorySecondEntityService;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 /**
@@ -139,5 +137,60 @@ public class CategorySecondEntityServiceImpl implements CategorySecondEntityServ
             logger.info("删除categorySecond出错{}",e);
             return ActionResult.failure("删除categorySecond出错");
         }
+    }
+
+    /**
+     * 通过csid csname cname 分页查找二级分类
+     * @param csid
+     * @param csname
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    @Override
+    public Page<CategorySecondEntity> findByCsidAndCsnameAndCname(final Integer csid,final String csname,final String cname, PageInfo pageInfo) {
+        Specification<CategorySecondEntity> specification = new Specification<CategorySecondEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<CategorySecondEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<Integer> _csid = root.get("csid");
+                Predicate csid1 = criteriaBuilder.equal(_csid,csid);
+                Path<String> _csname = root.get("csname");
+                Predicate csname1 = criteriaBuilder.like(_csname,"%" + csname + "%");
+                Path<String> _cname = root.get("category").get("cname");
+                Predicate cname1 = criteriaBuilder.like(_cname,"%"+cname+"%");
+                return criteriaBuilder.and(csid1,csname1,cname1);
+            }
+        };
+        pageInfo.setSortName("csid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return categorySecondEntityRepo.findAll(specification, pageable);
+    }
+
+    /**
+     * 通过 csname cname 分页查找二级分类
+     * @param csname
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    @Override
+    public Page<CategorySecondEntity> findByCsnameAndCname(final String csname, final String cname, PageInfo pageInfo) {
+        Specification<CategorySecondEntity> specification = new Specification<CategorySecondEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<CategorySecondEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<String> _csname = root.get("csname");
+                Predicate csname1 = criteriaBuilder.like(_csname,"%" + csname + "%");
+                Path<String> _cname = root.get("category").get("cname");
+                Predicate cname1 = criteriaBuilder.like(_cname,"%"+cname+"%");
+                return criteriaBuilder.and(csname1,cname1);
+            }
+        };
+        pageInfo.setSortName("csid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return categorySecondEntityRepo.findAll(specification, pageable);
     }
 }

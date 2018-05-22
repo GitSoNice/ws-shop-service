@@ -2,6 +2,7 @@ package com.ws.shop.service;
 
 import com.ws.shop.bean.PageInfo;
 import com.ws.shop.entity.CategorySecondEntity;
+import com.ws.shop.entity.ProductsEntity;
 import com.ws.shop.utils.ActionResult;
 import org.springframework.data.domain.Page;
 
@@ -48,4 +49,22 @@ public interface CategorySecondEntityService {
      */
     public ActionResult deleteCategorySecond(CategorySecondEntity categorySecond,Integer uid);
 
+    /**
+     * 通过csid csname cname 分页查找二级分类
+     * @param csid
+     * @param csname
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    public Page<CategorySecondEntity> findByCsidAndCsnameAndCname(final Integer csid, final String csname, final String cname, PageInfo pageInfo);
+
+    /**
+     * 通过 csname cname 分页查找二级分类
+     * @param csname
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    public Page<CategorySecondEntity> findByCsnameAndCname(final String csname,final String cname, PageInfo pageInfo);
 }

@@ -70,6 +70,12 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
 
     }
 
+    /**
+     * 根据名字查找商品
+     * @param name
+     * @param pageInfo
+     * @return
+     */
     @Override
     public Page<ProductsEntity> findByName(final String name, PageInfo pageInfo) {
         Specification<ProductsEntity> specification = new Specification<ProductsEntity>() {
@@ -109,6 +115,14 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
         return productsEntityRepo.findAll(specification, pageable);
     }
 
+    /**
+     * 通过pid pname csname 分页查找商品
+     * @param pid
+     * @param pname
+     * @param csname
+     * @param pageInfo
+     * @return
+     */
     @Override
     public Page<ProductsEntity> findByPidAndPnameAndCsname(final Integer pid,final String pname,final String csname, PageInfo pageInfo) {
         Specification<ProductsEntity> specification = new Specification<ProductsEntity>() {
@@ -130,6 +144,13 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
         return productsEntityRepo.findAll(specification, pageable);
     }
 
+    /**
+     *    通过 pname csname 分页查找商品
+     * @param pname
+     * @param csname
+     * @param pageInfo
+     * @return
+     */
     @Override
     public Page<ProductsEntity> findByPnameAndCsname(final String pname,final String csname, PageInfo pageInfo) {
         Specification<ProductsEntity> specification = new Specification<ProductsEntity>() {

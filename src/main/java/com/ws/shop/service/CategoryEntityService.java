@@ -2,6 +2,7 @@ package com.ws.shop.service;
 
 import com.ws.shop.bean.PageInfo;
 import com.ws.shop.entity.CategoryEntity;
+import com.ws.shop.entity.ProductsEntity;
 import com.ws.shop.utils.ActionResult;
 import org.springframework.data.domain.Page;
 
@@ -49,4 +50,21 @@ public interface CategoryEntityService {
      * @return
      */
     public List<CategoryEntity> findCatagorys();
+
+    /**
+     * 根据cid，cname分页查询一级分类
+     * @param cid
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    public Page<CategoryEntity> findByCidAndCname(final Integer cid,  final String cname, PageInfo pageInfo);
+
+    /**
+     *    通过 cname 分页查找商品
+     * @param cname
+     * @param pageInfo
+     * @return
+     */
+    public Page<CategoryEntity> findByCname(final String cname, PageInfo pageInfo);
 }

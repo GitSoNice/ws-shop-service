@@ -1,6 +1,7 @@
 package com.ws.shop.service.impl;
 
 import com.ws.shop.bean.PageInfo;
+import com.ws.shop.entity.ProductsEntity;
 import com.ws.shop.entity.UserEntity;
 import com.ws.shop.repository.UserEntityRepo;
 import com.ws.shop.service.UserEntityService;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 /**
  * 用户service
@@ -33,11 +31,6 @@ public class UserEntityServiceImpl implements UserEntityService {
 
     @Autowired
     UserEntityRepo userEntityRepo;
-
-   /* public UserEntity active(String code) {
-        logger.info("开始查找user，通过激活码{}",code);
-        return userEntityRepo.findByCode(code);
-    }*/
 
     /**
      * 通过用户名密码查询
@@ -124,6 +117,29 @@ public class UserEntityServiceImpl implements UserEntityService {
                 Predicate predicate = criteriaBuilder.conjunction();
                 criteriaQuery.where(predicate);
                 return predicate;
+            }
+        };
+        pageInfo.setSortName("uid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return userEntityRepo.findAll(specification, pageable);
+    }
+
+    /**
+     * 根据用户名查找用户并分页
+     * @param username
+     * @param pageInfo
+     * @return
+     */
+    @Override
+    public Page<UserEntity> findByUserName(final String username, PageInfo pageInfo) {
+        Specification<UserEntity> specification = new Specification<UserEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<String> _username = root.get("username");
+                Predicate name1 = criteriaBuilder.like(_username,"%" + username + "%");
+                return name1;
             }
         };
         pageInfo.setSortName("uid");

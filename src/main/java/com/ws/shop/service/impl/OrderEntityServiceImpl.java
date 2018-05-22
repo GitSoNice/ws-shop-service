@@ -4,6 +4,7 @@ import com.ws.shop.bean.PageInfo;
 import com.ws.shop.entity.AdminEntity;
 import com.ws.shop.entity.OrderItemEntity;
 import com.ws.shop.entity.OrdersEntity;
+import com.ws.shop.entity.ProductsEntity;
 import com.ws.shop.repository.OrdersEntityRepo;
 import com.ws.shop.service.AdminEntityService;
 import com.ws.shop.service.OrderEntityService;
@@ -165,5 +166,58 @@ public class OrderEntityServiceImpl implements OrderEntityService{
             logger.info("删除ordersEntity出错{}",e);
             return ActionResult.failure("删除ordersEntity出错");
         }
+    }
+
+    @Override
+    public Page<OrdersEntity> findByOidAndUid(final Integer oid,final Integer uid, PageInfo pageInfo) {
+        Specification<OrdersEntity> specification = new Specification<OrdersEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<OrdersEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<Integer> _oid = root.get("oid");
+                Predicate oid1 = criteriaBuilder.equal(_oid, oid );
+                Path<Integer> _uid = root.get("user").get("uid");
+                Predicate uid1 = criteriaBuilder.equal(_uid,uid);
+                return criteriaBuilder.and(oid1,uid1);
+            }
+        };
+        pageInfo.setSortName("oid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return ordersEntityRepo.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<OrdersEntity> adminFindByOid(final Integer oid, PageInfo pageInfo) {
+        Specification<OrdersEntity> specification = new Specification<OrdersEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<OrdersEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<Integer> _oid = root.get("oid");
+                Predicate oid1 = criteriaBuilder.equal(_oid, oid );
+                return oid1;
+            }
+        };
+        pageInfo.setSortName("oid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return ordersEntityRepo.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<OrdersEntity> adminFindByUid(final Integer uid, PageInfo pageInfo) {
+        Specification<OrdersEntity> specification = new Specification<OrdersEntity>() {
+
+            @Override
+            public Predicate toPredicate(Root<OrdersEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<Integer> _uid = root.get("user").get("uid");
+                Predicate uid1 = criteriaBuilder.equal(_uid,uid);
+                return uid1;
+            }
+        };
+        pageInfo.setSortName("oid");
+        Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
+        Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
+        return ordersEntityRepo.findAll(specification, pageable);
     }
 }
