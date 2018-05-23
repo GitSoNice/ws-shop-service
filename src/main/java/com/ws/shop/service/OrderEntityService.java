@@ -6,6 +6,7 @@ import com.ws.shop.entity.OrdersEntity;
 import com.ws.shop.utils.ActionResult;
 import org.springframework.data.domain.Page;
 
+import java.io.InputStream;
 import java.util.List;
 
 public interface OrderEntityService {
@@ -89,4 +90,11 @@ public interface OrderEntityService {
      * @return
      */
     public Page<OrdersEntity> adminFindByUid(final Integer uid,PageInfo pageInfo);
+
+    /**
+     * 导出表格
+     * @return
+     * @throws Exception
+     */
+    public InputStream getInputStream() throws Exception;
 }

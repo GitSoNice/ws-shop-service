@@ -1,14 +1,13 @@
 package com.ws.shop.service.impl;
 
 import com.ws.shop.bean.PageInfo;
-import com.ws.shop.entity.AdminEntity;
-import com.ws.shop.entity.CategoryEntity;
-import com.ws.shop.entity.CategorySecondEntity;
-import com.ws.shop.entity.ProductsEntity;
+import com.ws.shop.entity.*;
 import com.ws.shop.repository.ProductsEntityRepo;
 import com.ws.shop.service.AdminEntityService;
+import com.ws.shop.service.CategoryEntityService;
 import com.ws.shop.service.ProductsEntityService;
 import com.ws.shop.utils.ActionResult;
+import com.ws.shop.utils.ExportExcel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +42,9 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
 
     @Autowired
     AdminEntityService adminEntityService;
+
+    @Autowired
+    CategoryEntityService categoryEntityService;
 
     @PersistenceContext
     private EntityManager em;
@@ -295,6 +298,7 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
      * @param uid
      * @return
      */
+    @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ActionResult deleteProduct(ProductsEntity prodcut,Integer uid) {
         AdminEntity admin = adminEntityService.SearchAdmin(uid);
@@ -310,6 +314,36 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
             return ActionResult.failure("删除出错");
         }
 
+    }
+
+    @Override
+    public InputStream getInputStream() throws Exception {
+        String[] title=new String[]{"商品编码","商品名","市场价","商城价","库存","描述","上架时间","是否热门","所属二级分类名","所属一级分类名"};
+        List<ProductsEntity> products = productsEntityRepo.findAll();
+        List<Object[]>  dataList = new ArrayList<Object[]>();
+        for(int i=0;i<products.size();i++){
+            Object[] obj=new Object[10];
+            obj[0]=products.get(i).getPid();
+            obj[1]=products.get(i).getPname();
+            obj[2] = products.get(i).getMarket_price();
+            obj[3]=products.get(i).getShop_price();
+            obj[4]=products.get(i).getInventory();
+            obj[5]=products.get(i).getPdesc();
+            obj[6]=products.get(i).getPdate();
+            if(products.get(i).getIs_hot()==1){
+                obj[7]="热门";
+            }else{
+                obj[7]="非热门";
+            }
+            obj[8]=products.get(i).getCategorySecond().getCsname();
+            CategoryEntity categoryEntity = categoryEntityService.findCategory(products.get(i).getCid());
+            obj[9]=categoryEntity.getCname();
+            dataList.add(obj);
+        }
+        ExportExcel ex = new ExportExcel(title, dataList);
+        InputStream in;
+        in = ex.export();
+        return in;
     }
 
 

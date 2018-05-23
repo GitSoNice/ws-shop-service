@@ -5,6 +5,8 @@ import com.ws.shop.entity.UserEntity;
 import com.ws.shop.utils.ActionResult;
 import org.springframework.data.domain.Page;
 
+import java.io.InputStream;
+
 public interface UserEntityService {
 
     /**
@@ -64,4 +66,10 @@ public interface UserEntityService {
      */
     public Page<UserEntity> findByUserName(final String username, PageInfo pageInfo);
 
+    /**
+     * 用户信息导出exccel
+     * @return
+     * @throws Exception
+     */
+    public InputStream getInputStream() throws Exception;
 }

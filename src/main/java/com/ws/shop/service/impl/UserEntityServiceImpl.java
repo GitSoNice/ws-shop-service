@@ -6,6 +6,7 @@ import com.ws.shop.entity.UserEntity;
 import com.ws.shop.repository.UserEntityRepo;
 import com.ws.shop.service.UserEntityService;
 import com.ws.shop.utils.ActionResult;
+import com.ws.shop.utils.ExportExcel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户service
@@ -146,5 +150,32 @@ public class UserEntityServiceImpl implements UserEntityService {
         Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
         Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
         return userEntityRepo.findAll(specification, pageable);
+    }
+
+    /**
+     * 导出表格
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public InputStream getInputStream() throws Exception {
+        String[] title=new String[]{"用户编码","用户名","密码","姓名","邮箱","电话","地址"};
+        List<UserEntity> users = userEntityRepo.findAll();
+        List<Object[]>  dataList = new ArrayList<Object[]>();
+        for(int i=0;i<users.size();i++){
+            Object[] obj=new Object[7];
+            obj[0]=users.get(i).getUid();
+            obj[1]=users.get(i).getUsername();
+            obj[2] = users.get(i).getPassword();
+            obj[3]=users.get(i).getName();
+            obj[4]=users.get(i).getEmail();
+            obj[5]=users.get(i).getPhone();
+            obj[6]=users.get(i).getAddr();
+            dataList.add(obj);
+        }
+        ExportExcel ex = new ExportExcel(title, dataList);
+        InputStream in;
+        in = ex.export();
+        return in;
     }
 }

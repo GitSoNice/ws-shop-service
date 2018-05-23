@@ -1,14 +1,12 @@
 package com.ws.shop.service.impl;
 
 import com.ws.shop.bean.PageInfo;
-import com.ws.shop.entity.AdminEntity;
-import com.ws.shop.entity.OrderItemEntity;
-import com.ws.shop.entity.OrdersEntity;
-import com.ws.shop.entity.ProductsEntity;
+import com.ws.shop.entity.*;
 import com.ws.shop.repository.OrdersEntityRepo;
 import com.ws.shop.service.AdminEntityService;
 import com.ws.shop.service.OrderEntityService;
 import com.ws.shop.utils.ActionResult;
+import com.ws.shop.utils.ExportExcel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -219,5 +219,42 @@ public class OrderEntityServiceImpl implements OrderEntityService{
         Sort sort = new Sort(Sort.Direction.DESC, pageInfo.getSortName());
         Pageable pageable = new PageRequest(pageInfo.getPage(), pageInfo.getSize(), sort);
         return ordersEntityRepo.findAll(specification, pageable);
+    }
+
+    /**
+     * 导出表格
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public InputStream getInputStream() throws Exception {
+        String[] title=new String[]{"订单编号","地址","姓名","下单时间","电话","状态","总价","用户编号","用户名"};
+        List<OrdersEntity> orders = ordersEntityRepo.findAll();
+        List<Object[]>  dataList = new ArrayList<Object[]>();
+        for(int i=0;i<orders.size();i++){
+            Object[] obj=new Object[9];
+            obj[0]=orders.get(i).getOid();
+            obj[1]=orders.get(i).getAddr();
+            obj[2] = orders.get(i).getName();
+            obj[3]=orders.get(i).getOrdertime();
+            obj[4]=orders.get(i).getPhone();
+            if(orders.get(i).getState()==1){
+                obj[5]="未付款";
+            }else if(orders.get(i).getState()==2){
+                obj[5]="发货";
+            }else if(orders.get(i).getState()==3){
+                obj[5]="待收货";
+            }else if(orders.get(i).getState()==4){
+                obj[5]="订单完成";
+            }
+            obj[6]=orders.get(i).getTotal();
+            obj[7]=orders.get(i).getUser().getUid();
+            obj[8]=orders.get(i).getUser().getUsername();
+            dataList.add(obj);
+        }
+        ExportExcel ex = new ExportExcel(title, dataList);
+        InputStream in;
+        in = ex.export();
+        return in;
     }
 }

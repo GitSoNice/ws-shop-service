@@ -6,6 +6,7 @@ import com.ws.shop.entity.UserEntity;
 import com.ws.shop.utils.ActionResult;
 import org.springframework.data.domain.Page;
 
+import java.io.InputStream;
 import java.util.List;
 
 public interface ProductsEntityService {
@@ -112,4 +113,11 @@ public interface ProductsEntityService {
      * @return
      */
     public Page<ProductsEntity> findByPnameAndCsname(final String pname,final String csname, PageInfo pageInfo);
-    }
+
+    /**
+     * 导出商品Excel
+     * @return
+     * @throws Exception
+     */
+    public InputStream getInputStream() throws Exception;
+}
