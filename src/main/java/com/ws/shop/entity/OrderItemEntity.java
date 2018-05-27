@@ -1,5 +1,7 @@
 package com.ws.shop.entity;
 
+import org.hibernate.annotations.OnDelete;
+
 import javax.persistence.*;
 
 /**

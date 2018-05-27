@@ -2,6 +2,7 @@ package com.ws.shop.service.impl;
 
 import com.ws.shop.bean.PageInfo;
 import com.ws.shop.entity.*;
+import com.ws.shop.repository.OrdersItemEntityRepo;
 import com.ws.shop.repository.ProductsEntityRepo;
 import com.ws.shop.service.AdminEntityService;
 import com.ws.shop.service.CategoryEntityService;
@@ -19,10 +20,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,6 +38,9 @@ public class ProductsEntityServiceImpl implements ProductsEntityService{
 
     @Autowired
     ProductsEntityRepo productsEntityRepo;
+
+    @Autowired
+    OrdersItemEntityRepo ordersItemEntityRepo;
 
     @Autowired
     AdminEntityService adminEntityService;
