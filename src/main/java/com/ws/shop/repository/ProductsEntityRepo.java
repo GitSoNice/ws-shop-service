@@ -54,7 +54,7 @@ public interface ProductsEntityRepo extends JpaRepository<ProductsEntity,Long> ,
     @Query(nativeQuery = true,value = "select * from product order by pdate desc limit 0,10")
     public List<ProductsEntity> findNewProduct();
 
-    @Query(nativeQuery =true ,value="select * from product where is_hot=? limit 0,10")
+    @Query(nativeQuery =true ,value="select * from product where is_hot=? order by pid desc limit 0,10")
     public List<ProductsEntity>findByIs_hot(String hot);
 
 }

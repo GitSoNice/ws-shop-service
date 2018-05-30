@@ -34,7 +34,7 @@ public class CategoryEntity implements Serializable{
     /**
      * 优惠时间
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date privilegeTime;
 
     /**
