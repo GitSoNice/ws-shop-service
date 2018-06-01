@@ -34,7 +34,6 @@ public class CategoryEntity implements Serializable{
     /**
      * 优惠时间
      */
-    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date privilegeTime;
 
     /**
@@ -76,6 +75,8 @@ public class CategoryEntity implements Serializable{
         this.discount = discount;
     }
 
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     @Column(name = "PRIVILEGETIME",nullable = true)
     public Date getPrivilegeTime() {
         return privilegeTime;
